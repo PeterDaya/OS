@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <dirent.h>
+#include <string.h>
 #include <errno.h>
 
 void quit(char *msg) {
@@ -26,7 +27,13 @@ void list_files(const char *path) {
 		if (strcmp(temp->d_name, ".") == 0 || strcmp(temp->d_name, "..") == 0)
 			continue;
 
-		if (strcmp(path, ".") 
+		if (strcmp(path, ".") != 0) {
+			printf("%s/", path);
+			printf("%s\n", temp->d_name);
+		}
+
+		if (errno != 0 || closedir(dir) < 0)
+			quit("Error with close()");	
 	}
 }
 
