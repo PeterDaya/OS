@@ -1,0 +1,2 @@
+When running auth.c, the program should
+be run with superuser privileges.

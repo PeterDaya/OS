@@ -6,6 +6,7 @@
 #include <limits.h>
 #include <shadow.h>
 
+#define _GNU_SOURCE
 #define _XOPEN_SOURCE
 
 static void quit(char *err) {
