@@ -58,6 +58,7 @@ int main(int argc, char **argv) {
 		printf("An incorrect password was entered\n");
 		quit("Incorrect password");
 	}
-
+	
+	free(user);
 	return 0;
 }
