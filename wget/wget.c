@@ -21,8 +21,10 @@ int main(int argc, char **argv) {
 	if (argc != 3)
 		fprintf(stderr, "Usage: ./wget <serverName> <URL>\n");
 
-	serverName = argv[1];
-	URL = argv[2];
+	serverName = argv[1]; /* IE: www.google.com */
+	URL = argv[2]; /* IE: www.blahblah.com/file/~peter/index.html, the full URL + file path */
+
+	/* This group of strstr() calls pick the domain name to get the file path */
 
 	if (strstr(URL, ".com"))
 		fpath = strstr(URL, ".com") + 4;
@@ -35,12 +37,12 @@ int main(int argc, char **argv) {
 
 	if ((he = gethostbyname(serverName)) == NULL)
 		quit("gethostbyname() failed");
-
 	IP = inet_ntoa(*(struct in_addr *)he->h_addr);
+	
 	fname = strchr(URL, '\0');
 	while (*fname != '/')
 		fname--;
-	fname++;
+	fname++; /*This routine gets the file name */
 
 	if ((clntSocket = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0)
 		quit("socket() failed");
@@ -53,12 +55,13 @@ int main(int argc, char **argv) {
 	if (connect(clntSock, (struct sockaddr *) &servaddr, sizeof(servaddr)) < 0)
 		quit("connect() failed");
 
+	/* Format and send GET request */
 	snprintf(GET, sizeof(GET), "GET %s HTTP/1.0\r\nHost: %s:%d\r\n\r\n\r\n", fpath, serverName, port);
-
 	if (send(clntSock, GET, strlen(GET), 0) != strlen(GET))
 		quit("GET request failed");
+	
 
-	FILE *html = fopen(fname, "w");
+	FILE *html = fopen(fname, "w"); /* We will write to a file with this FILE pointer */
 	if (html == NULL)
 		quit("fopen() failed");
 
@@ -67,7 +70,6 @@ int main(int argc, char **argv) {
 		quit("fdopen() failed");
 
 	fgets(rec, sizeof(rec), readLine);
-
 	if (!strstr(rec, "200")) {
 		fprintf(stderr, "%s\n", rec);
 		fclose(readLine);
@@ -76,8 +78,17 @@ int main(int argc, char **argv) {
 		quit("We did not receive a 200 response");
 	}
 
+	fgets(rec, sizeof(rec), readLine); /* Cycle past HTML headers */
+	while ((strcmp(rec, "\r\n")) > 0)
+		fgets(rec, sizeof(rec), readLine);
 
-	
+	int bytes;
+	while ((bytes = fread(rec, 1, sizeof(rec), readLine)) > 0)
+		fwrite(rec, 1, bytes, html); /* Read and write to a file */
+
+	fclose(readLine);
+	fclose(html);
+	close(clntSocket);
 	
 	return 0;
 }
