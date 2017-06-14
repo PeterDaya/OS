@@ -32,8 +32,8 @@ void list_files(const char *path) {
 			printf("%s\n", temp->d_name);
 		}
 
-		if (errno != 0 || closedir(dir) < 0)
-			quit("Error with close()");	
+		closedir(dir);
+
 	}
 }
 
