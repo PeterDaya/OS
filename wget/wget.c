@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <string.h>
-#include <sys/sockets.h>
+#include <netdb.h>
+#include <sys/socket.h>
 #include <arpa/inet.h>
 
 /* HTTP port is port 80 */
@@ -30,6 +32,8 @@ int main(int argc, char **argv) {
 		fpath = strstr(URL, ".com") + 4;
 	else if (strstr(URL, ".net"))
 		fpath = strstr(URL, ".net") + 4;
+	else if (strstr(URL, ".edu"))
+		fpath = strstr(URL, ".edu") + 4;
 	else if (strstr(URL, ".org"))
 		fpath = strstr(URL, ".org") + 4;
 	else if (strstr(URL, ".gov"))
@@ -52,12 +56,12 @@ int main(int argc, char **argv) {
 	servaddr.sin_addr.s_addr = inet_addr(IP);
 	servaddr.sin_port = htons(port);
 
-	if (connect(clntSock, (struct sockaddr *) &servaddr, sizeof(servaddr)) < 0)
+	if (connect(clntSocket, (struct sockaddr *) &servaddr, sizeof(servaddr)) < 0)
 		quit("connect() failed");
 
 	/* Format and send GET request */
 	snprintf(GET, sizeof(GET), "GET %s HTTP/1.0\r\nHost: %s:%d\r\n\r\n\r\n", fpath, serverName, port);
-	if (send(clntSock, GET, strlen(GET), 0) != strlen(GET))
+	if (send(clntSocket, GET, strlen(GET), 0) != strlen(GET))
 		quit("GET request failed");
 	
 
