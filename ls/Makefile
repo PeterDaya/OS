@@ -7,7 +7,7 @@ CFLAGS   = -g -Wall $(INCLUDES)
 CXXFLAGS = -g -Wall $(INCLUDES)
 
 LDFLAGS = -g
-LDLIBS = -lcrypt
+LDLIBS = 
 
 list_files:
 

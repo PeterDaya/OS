@@ -14,6 +14,7 @@ void quit(char *msg) {
 void list_files(const char *path) {
 	struct dirent *temp;
 	DIR *dir;
+	errno = 0;
 
 	if ((dir = opendir(path)) == NULL)
 		quit("opendir() returned NULL");
@@ -22,20 +23,19 @@ void list_files(const char *path) {
 		if ((temp = readdir(dir)) == NULL)
 			break;
 
-		errno = 0;
-
 		if (strcmp(temp->d_name, ".") == 0 || strcmp(temp->d_name, "..") == 0)
 			continue;
 
-		if (strcmp(path, ".") != 0) {
+		if (strcmp(path, ".") != 0) 
 			printf("%s/", path);
-			printf("%s\n", temp->d_name);
-		}
-
-		closedir(dir);
-
+		
+		printf("%s\n", temp->d_name);
 	}
+
+	if (errno != 0)
+		quit("errno is not 0!");
+
+	if (closedir(dir) < 0)
+		quit("closedir()");
 }
-
-
 #endif
