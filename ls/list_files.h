@@ -11,6 +11,7 @@ void quit(char *msg) {
 	exit(1);
 }
 
+/* This program is similar to the command line program, "ls" */
 void list_files(const char *path) {
 	struct dirent *temp;
 	DIR *dir;
@@ -18,7 +19,9 @@ void list_files(const char *path) {
 
 	if ((dir = opendir(path)) == NULL)
 		quit("opendir() returned NULL");
-
+	
+	/* We print the path to each filename and directory specified in the
+	 * directory of interest. */
 	while (1) {
 		if ((temp = readdir(dir)) == NULL)
 			break;

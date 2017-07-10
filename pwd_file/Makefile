@@ -15,7 +15,11 @@ auth.o:
 
 .PHONY: valgrind
 valgrind: auth
-	valgrind --leak-check=yes ./auth
+	valgrind --leak-check=yes sudo ./auth
+
+.PHONY: run
+run: auth
+	sudo ./auth
 
 .PHONY: clean
 clean:

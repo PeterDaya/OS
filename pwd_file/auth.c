@@ -29,10 +29,11 @@ int main(int argc, char **argv) {
 		quit("malloc() returned NULL");
 
 	printf("Username: ");
-	fgets(user, max, stdin);
+	fgets(user, max, stdin); /* Takes a username as input */
 
 	user[strlen(user) - 1] = '\0';
 
+	/* Here we look up password and shadow password data */
 	if ((pwd = getpwnam(user)) == NULL || 
 	(shadow = getspnam(user)) == NULL)
 		quit("Password methods returned NULL");
@@ -58,6 +59,14 @@ int main(int argc, char **argv) {
 		printf("An incorrect password was entered\n");
 		quit("Incorrect password");
 	}
+
+	/*
+	 *
+	 * This part of the program can start executing more privileged instructions.
+	 *
+	 *
+	 *
+	 */
 	
 	free(user);
 	return 0;
